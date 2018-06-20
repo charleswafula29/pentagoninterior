@@ -153,12 +153,28 @@ include('connection.php');
                 <body>
 
                     <div id="mySidenav" class="sidenav">
-                        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                        <a data-toggle="modal" data-target="#myModal">Add Administrator</a>
-                        <a data-toggle="modal" data-target="#myModal2">Add images to Gallery</a>
-                        <a data-toggle="modal" data-target="#myModal3">Manage Gallery</a>
-                        <a data-toggle="modal" data-target="#myModal5">User Messages</a>
+                        <?php
+                        $messages="SELECT * FROM `messages`";
+                        $result_message=mysqli_query($conn,$messages);
+                        $count=mysqli_num_rows($result_message);
+                        ?>
+                            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                            <a data-toggle="modal" data-target="#myModal">Add Designers</a>
+                            <a data-toggle="modal" data-target="#myModal2">Add images to Gallery</a>
+                            <a data-toggle="modal" data-target="#myModal3">Manage Gallery</a>
+                            <a data-toggle="modal" data-target="#myModal5">User Messages<span class="badge" id="spaner"><?php if($count !== 0){
+    echo $count ;     
+    }?></span></a>
                     </div>
+                    <style>
+                        #spaner {
+                            background-color: #FAA612;
+                            color: black;
+                            font-size: 16px;
+                            margin-left: 5px;
+                        }
+
+                    </style>
                     <script>
                         function openNav() {
                             document.getElementById("mySidenav").style.width = "250px";
@@ -177,20 +193,16 @@ include('connection.php');
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Add Administrators</h4>
+                                    <h4 class="modal-title">Add Designers</h4>
                                 </div>
                                 <div class="modal-body">
                                     <form method="post" action="#">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">New Admin username</label>
-                                            <input class="form-control" id="exampleInputEmail1" name="Username" type="text" placeholder="Enter Username" required>
+                                            <label for="exampleInputEmail1">New Designer Emailaddress</label>
+                                            <input class="form-control" id="exampleInputEmail1" name="Username" type="email" placeholder="Enter Username" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1">New Admin Password</label>
-                                            <input class="form-control" id="exampleInputPassword1" name="password" type="password" placeholder="Password" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1">Confirm Password</label>
+                                            <label for="exampleInputPassword1">New Designer Name</label>
                                             <input class="form-control" id="exampleInputPassword1" name="password" type="password" placeholder="Password" required>
                                         </div>
                                         <button class="btn colors btn-block" name="CreateAcc">Create Account</button>
@@ -198,7 +210,7 @@ include('connection.php');
                                         if(isset($_POST['CreateAcc'])){
                                             $Username=$_POST['Username'];
                                             $Password=$_POST['password'];
-                                            $sql2="INSERT INTO `users`(`username`, `password`) VALUES ('$Username','$Password')";
+                                            $sql2="INSERT INTO `designers`(`Email`, `Names`) VALUES ('$Username','$Password')";
                                             mysqli_query($conn,$sql2);
                                         }
                                         ?>
@@ -374,7 +386,8 @@ if(isset($_POST['Send'])){
                                             <tr>
                                                 <th>Names</th>
                                                 <th>Emailaddress</th>
-                                                <th>Message</th>
+                                                <th>Service</th>
+                                                <th>Action</th>
                                             </tr>
                                             <?php
             $sql5="SELECT * FROM `messages`";
@@ -384,11 +397,12 @@ if(isset($_POST['Send'])){
              $Email=$tabledata5['Email'];
              $ID5=$tabledata5['id'];
              $Message=$tabledata5['Message'];
+             $service=$tabledata5['service'];
         echo"<tr>";
         echo"<td>{$Names}</td>";
         echo"<td>{$Email}</td>";
-        echo"<td>{$Message}</td>";
-        echo"<td><a href='Deletor.php?id={$ID}'><input type='button' class='btn22' value='Delete'></a></td>";
+        echo"<td>{$service}</td>";
+        echo"<td><a href='ViewMessage.php?id={$ID5}'><input type='button' class='btn22' value='View'></a></td>";
         echo"</tr>";
     } ?>
                                                 <style>

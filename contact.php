@@ -50,7 +50,6 @@
 
 
 
-
         <body id="homepage">
 
             <div id="wrapper">
@@ -140,9 +139,19 @@
                                                     <label for="email">emailaddress:</label>
                                                     <input class="texts" type="email" name="email" placeholder="" required/>
                                                 </p>
-
+                                                <p>
+                                                    <label>Service:</label>
+                                                    <select class="forms6" name="service">
+                <option value="Residential Design">Residential Design</option>
+                <option value="Office Design">Office Design</option>
+                <option value="Commercial Design">Commercial Design</option>
+                <option value="Wall hanging design">Wall hanging design</option>
+                <option value="Room layout Design">Room layout Design</option>
+                <option value="Living room Design">Living room Design</option>
+            </select>
+                                                </p>
                                                 <p class="right">
-                                                    <label for="comments">message</label><br>
+                                                    <label for="comments">Specify Service info</label><br>
                                                     <textarea class="texts" cols="46" rows="3" name="comments" required></textarea>
                                                 </p>
 
@@ -151,15 +160,32 @@
                                                 </li>
                                                 <?php
                                                 if(isset($_POST['send'])){
-                                                    $Fname=$_POST['first_name'];
-                                                    $Lname=$_POST['last_name'];
-                                                    $Email=$_POST['email'];
-                                                    $Message=$_POST['comments'];
-                                                    $fullnames= $Fname." ".$Lname;
+$Fname=$_POST['first_name'];
+$Lname=$_POST['last_name'];
+$Email=$_POST['email'];
+$Message=$_POST['comments'];
+$fullnames= $Fname." ".$Lname;
+$service=$_POST['service'];
+
+$sql="INSERT INTO `messages`(`Names`, `Email`, `Message`,`service`) VALUES ('$fullnames','$Email','$Message','$service')";
+include('connection.php');
+mysqli_query($conn,$sql);
                                                     
-                                                    $sql="INSERT INTO `messages`(`Names`, `Email`, `Message`) VALUES ('$fullnames','$Email','$Message')";
-                                                    include('connection.php');
-                                                    mysqli_query($conn,$sql);
+require_once('admin/PHPMailer-master/PHPMailerAutoload.php');
+$mailer= new PHPMailer();
+$mailer->isSMTP();
+$mailer->SMTPAuth=true;
+$mailer->SMTPSecure='ssl';
+$mailer->Host='smtp.gmail.com';
+$mailer->Port='465';
+$mailer->isHTML();
+$mailer->Username='csprojecttest2017@gmail.com';
+$mailer->Password='Shitanda1997';
+$mailer->SetFrom('no-reply@howcode.org');
+$mailer->Subject='PENTAGON INTERIOR ORDER';
+$mailer->Body='Your request has been sent successful. Kindly await for response as you will be alerted once your application has been responded to. Warm regards.';
+$mailer->AddAddress($Email);
+$mailer->Send(); 
                                                 }
                                                 ?>
 
